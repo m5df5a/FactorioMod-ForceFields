@@ -1,5 +1,5 @@
 require 'src/utilities'
-require "__LSlib__/LSlib"
+require "__LSlib2o__/LSlib"
 local prototypeSettings = require('prototypes/settings')
 
 local settings = {}

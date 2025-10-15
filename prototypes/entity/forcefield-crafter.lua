@@ -6,7 +6,7 @@ forcefieldCrafter.name = emitterSettings.emitterName .. "-crafter"
 forcefieldCrafter.localised_name = {"", {"entity-name."..emitterSettings.emitterName}, "                         "}
 forcefieldCrafter.localised_description = {"",
   {"entity-description."..emitterSettings.emitterName},
-  {"tooltip-description.unobtainable", {"mod-name.ForceFields2"}},
+  {"tooltip-description.unobtainable", {"mod-name.ForceFields2-2o"}},
 }
 
 forcefieldCrafter.minable.result = nil

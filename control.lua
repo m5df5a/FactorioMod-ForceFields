@@ -24,7 +24,7 @@ script.on_init(function(_)
 end)
 
 script.on_configuration_changed(function (data)
-  if data.mod_changes and data.mod_changes.ForceFields2 and data.mod_changes.ForceFields2.old_version then
+  if data.mod_changes and data.mod_changes["ForceFields2-2o"] and data.mod_changes["ForceFields2-2o"].old_version then
     ConfigChanges:onConfigurationChanged()
     settings:verifySettings()
   end

@@ -1,4 +1,4 @@
-require "__LSlib__/LSlib"
+require "__LSlib2o__/LSlib"
 local settings = require("prototypes/settings")
 local guiSettings = settings["gui"]
 local guiNames = require("prototypes/gui/layout/guiElementNames")

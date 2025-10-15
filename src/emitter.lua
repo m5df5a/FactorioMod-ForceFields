@@ -1,6 +1,6 @@
 local settings = require 'src/settings'
 require 'src/utilities'
-require "__LSlib__/LSlib"
+require "__LSlib2o__/LSlib"
 
 require 'util'
 

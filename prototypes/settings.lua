@@ -1,5 +1,5 @@
 local prototypeSettings = {}
-prototypeSettings["modName"] = "__ForceFields2__"
+prototypeSettings["modName"] = "__ForceFields2-2o__"
 
 local prototyping = data and data.raw or false
 

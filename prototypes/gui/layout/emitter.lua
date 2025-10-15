@@ -1,4 +1,4 @@
-require "__LSlib__/LSlib"
+require "__LSlib2o__/LSlib"
 local protoSettings = require("prototypes/settings")
 local runSettings = require("src/settings")
 local guiSettings = protoSettings["gui"]

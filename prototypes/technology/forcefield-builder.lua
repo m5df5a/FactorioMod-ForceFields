@@ -1,6 +1,6 @@
 require 'prototypes/item/forcefield-builder'
 require 'prototypes/recipe/forcefield-builder'
-require "__LSlib__/LSlib"
+require "__LSlib2o__/LSlib"
 
 function forcefieldWallTech(color)
 
