@@ -7,7 +7,7 @@ function forcefieldWallRecipe(color)
   data:extend{{
     type    = "recipe",
     name    = string.format(settings.name, "wall", color),
-    enabled = "false",
+    enabled = false,
 
     localised_name        = {"entity-name."..string.format(settings.name, "wall", color)},
     localised_description = (not settings.manualPlaceable) and {"",
@@ -25,15 +25,15 @@ function forcefieldWallRecipe(color)
     ingredients     = {},
     energy_required = math.floor(settings.properties.respawnRate * emitter.tickRate / 60 * 100)/100,
 
-    allow_decomposition   = "false",
-    allow_as_intermediate = "false",
-    hide_from_stats       = "true",
+    allow_decomposition   = false,
+    allow_as_intermediate = false,
+    hide_from_stats       = true,
 
     results              = {},
-    always_show_products = "false",
+    always_show_products = false,
 
     category            = emitter["crafting-category"],
-    always_show_made_in = "true",
+    always_show_made_in = true,
   }}
 
 end
@@ -49,7 +49,7 @@ function forcefieldGateRecipe(color)
   data:extend{{
     type    = "recipe",
     name    = string.format(settings.name, "gate", color),
-    enabled = "false",
+    enabled = false,
 
     localised_name        = {"entity-name."..string.format(settings.name, "gate", color)},
     localised_description = (not settings.manualPlaceable) and {"",
@@ -67,15 +67,15 @@ function forcefieldGateRecipe(color)
     ingredients = {},
     energy_required = math.floor(settings.properties.respawnRate * emitter.tickRate / 60 * 100)/100,
 
-    allow_decomposition   = "false",
-    allow_as_intermediate = "false",
-    hide_from_stats       = "true",
+    allow_decomposition   = false,
+    allow_as_intermediate = false,
+    hide_from_stats       = true,
 
     results             = {},
-    always_show_made_in = "true",
+    always_show_made_in = true,
 
     category            = emitter["crafting-category"],
-    always_show_made_in = "true",
+    always_show_made_in = true,
   }}
 
 end

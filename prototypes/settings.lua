@@ -82,19 +82,19 @@ prototypeSettings["blue"] =
   ["manualPlaceable"]   = false,
   ["wallTechnology"] = prototyping and {
                         ["additionalPrerequisites"] = {
-                         "optics",
+                         "lamp",
                          "stone-wall",
                          "military-2",
-                         "advanced-electronics",
+                         "advanced-circuit",
                          "battery",
                         },
                         ["additionalEffects"] = {
                           {type = "unlock-recipe", recipe = prototypeSettings["emitter"].emitterName}
                         },
                         ["technologyRecipe"] = {
-                          ["count"]       = math.floor( 0.5 + 2.5 * data.raw["technology"]["advanced-electronics"].unit.count),
-                          ["ingredients"] = util.table.deepcopy(data.raw["technology"]["advanced-electronics"].unit.ingredients),
-                          ["time"]        = 2 * data.raw["technology"]["advanced-electronics"].unit.time,
+                          ["count"]       = math.floor( 0.5 + 2.5 * data.raw["technology"]["advanced-circuit"].unit.count),
+                          ["ingredients"] = util.table.deepcopy(data.raw["technology"]["advanced-circuit"].unit.ingredients),
+                          ["time"]        = 2 * data.raw["technology"]["advanced-circuit"].unit.time,
                         },
     },
   ["gateTechnology"] = prototyping and {
@@ -105,9 +105,9 @@ prototypeSettings["blue"] =
 
                         },
                         ["technologyRecipe"] = {
-                          ["count"]       = math.floor( 0.5 + 0.5 * (2.5 * data.raw["technology"]["advanced-electronics"].unit.count)),
-                          ["ingredients"] = util.table.deepcopy(data.raw["technology"]["advanced-electronics"].unit.ingredients),
-                          ["time"]        = 2 * data.raw["technology"]["advanced-electronics"].unit.time,
+                          ["count"]       = math.floor( 0.5 + 0.5 * (2.5 * data.raw["technology"]["advanced-circuit"].unit.count)),
+                          ["ingredients"] = util.table.deepcopy(data.raw["technology"]["advanced-circuit"].unit.ingredients),
+                          ["time"]        = 2 * data.raw["technology"]["advanced-circuit"].unit.time,
                         },
     },
 }

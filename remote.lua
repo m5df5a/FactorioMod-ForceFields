@@ -17,13 +17,13 @@ remote.add_interface("forcefields", {
 
   -- reset removes all entities from the surface and re-init
   reset = function()
-    global.forcefields.emitters = nil
-    global.forcefields.fields = nil
-    global.forcefields.searchDamagedPos = nil
-    global.forcefields.activeEmitters = nil
-    global.forcefields.degradingFields = nil
-    global.forcefields.ticking = nil
-    global.forcefields.emitterConfigGUIs = nil
+    storage.forcefields.emitters = nil
+    storage.forcefields.fields = nil
+    storage.forcefields.searchDamagedPos = nil
+    storage.forcefields.activeEmitters = nil
+    storage.forcefields.degradingFields = nil
+    storage.forcefields.ticking = nil
+    storage.forcefields.emitterConfigGUIs = nil
     script.on_event(defines.events.on_tick, nil)
 
     for k,surface in pairs(game.surfaces) do

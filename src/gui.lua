@@ -51,10 +51,10 @@ end
 
 function Gui:onCloseGui(guiElement, playerIndex)
   if guiElement and guiElement.valid and guiElement.name == self.guiElementNames.guiFrame then
-    if global.forcefields.emitterConfigGuis["I" .. playerIndex] ~= nil then
+    if storage.forcefields.emitterConfigGuis["I" .. playerIndex] ~= nil then
       -- Check the upgrade items
-      if global.forcefields.emitterConfigGuis["I" .. playerIndex][1]["entity"].valid then
-        local emitterTable = global.forcefields.emitterConfigGuis["I" .. playerIndex][1]
+      if storage.forcefields.emitterConfigGuis["I" .. playerIndex][1]["entity"].valid then
+        local emitterTable = storage.forcefields.emitterConfigGuis["I" .. playerIndex][1]
         --local upgrades = guiElement[self.guiElementNames.configTable][self.guiElementNames.upgradesTable]
         local upgrades = LSlib.gui.getElement(playerIndex, self.guiElementPaths.upgradesTable)
 
@@ -82,10 +82,10 @@ function Gui:onCloseGui(guiElement, playerIndex)
       end
 
       -- Delete the gui data now...
-      global.forcefields.emitterConfigGuis["I" .. playerIndex] = nil
+      storage.forcefields.emitterConfigGuis["I" .. playerIndex] = nil
     end
-    if LSlib.utils.table.isEmpty(global.forcefields.emitterConfigGuis) then
-      global.forcefields.emitterConfigGuis = nil
+    if LSlib.utils.table.isEmpty(storage.forcefields.emitterConfigGuis) then
+      storage.forcefields.emitterConfigGuis = nil
     end
     if game.players[playerIndex].gui.center[self.guiElementNames.configFrame] then
       game.players[playerIndex].gui.center[self.guiElementNames.configFrame].destroy()
@@ -101,10 +101,10 @@ function Gui:showEmitterGui(emitterTable, playerIndex)
   local canOpenGui = true
 
   -- Check if someone else has this gui open at this moment
-  if global.forcefields.emitterConfigGuis ~= nil then
+  if storage.forcefields.emitterConfigGuis ~= nil then
     for index,player in pairs(game.players) do
       --if index ~= playerIndex then
-        if global.forcefields.emitterConfigGuis["I" .. index] ~= nil and global.forcefields.emitterConfigGuis["I" .. index][1] == emitterTable then
+        if storage.forcefields.emitterConfigGuis["I" .. index] ~= nil and storage.forcefields.emitterConfigGuis["I" .. index][1] == emitterTable then
           if index ~= playerIndex then
             game.players[playerIndex].print(player.name .. " (player " .. index .. ") has the GUI for this emitter open right now.")
           end
@@ -174,11 +174,11 @@ function Gui:showEmitterGui(emitterTable, playerIndex)
     LSlib.gui.getElement(playerIndex, self.guiElementPaths.upgradesWidth).number = emitterTable["width-upgrades"]
 
     -- Save gui
-    if global.forcefields.emitterConfigGuis == nil then
-      global.forcefields.emitterConfigGuis = {}
+    if storage.forcefields.emitterConfigGuis == nil then
+      storage.forcefields.emitterConfigGuis = {}
     end
-    global.forcefields.emitterConfigGuis["I" .. playerIndex] = {}
-    global.forcefields.emitterConfigGuis["I" .. playerIndex][1] = emitterTable
+    storage.forcefields.emitterConfigGuis["I" .. playerIndex] = {}
+    storage.forcefields.emitterConfigGuis["I" .. playerIndex][1] = emitterTable
 
     return createdGui
   else
@@ -190,7 +190,7 @@ end
 
 function Gui:createForcefieldGui(playerIndex, fieldWidth)
   local player = game.players[playerIndex]
-  local emitterTable = global.forcefields.emitterConfigGuis["I" .. playerIndex][1]
+  local emitterTable = storage.forcefields.emitterConfigGuis["I" .. playerIndex][1]
   local guiCenter = player.gui.center
   if guiCenter and guiCenter[self.guiElementNames.guiFrame] then
     if not guiCenter[self.guiElementNames.configFrame] then
@@ -280,7 +280,7 @@ function Gui:handleGuiDirectionButtons(event)
     local directions = LSlib.gui.getElement(playerIndex, self.guiElementPaths.directionTable)
 
     -- Save the newly selected direction
-    global.forcefields.emitterConfigGuis["I" .. playerIndex][2] = nameToDirection[event.element.name]
+    storage.forcefields.emitterConfigGuis["I" .. playerIndex][2] = nameToDirection[event.element.name]
 
     -- Set the buttons accordingly to pressed selection
     directions[self.guiElementNames.directionOptionN].style = settings.guiSelectButtonStyle
@@ -322,7 +322,7 @@ function Gui:handleGuiFieldTypeButtons(event)
 
     if shouldSwitch then
       -- Save the newly selected direction
-      global.forcefields.emitterConfigGuis["I" .. playerIndex][3] = nameToFieldType[selectedButtonName]
+      storage.forcefields.emitterConfigGuis["I" .. playerIndex][3] = nameToFieldType[selectedButtonName]
 
       -- Set the buttons accordingly to pressed selection
       fields[self.guiElementNames.fieldTypeOptionB].style = settings.guiSelectButtonStyle
@@ -361,7 +361,7 @@ function Gui:handleGuiFieldSetupButtons(event)
 
     if shouldSwitch then
       -- Save the newly selected setup
-      global.forcefields.emitterConfigGuis["I" .. playerIndex][5] = nameToFieldSetup[selectedButtonName]
+      storage.forcefields.emitterConfigGuis["I" .. playerIndex][5] = nameToFieldSetup[selectedButtonName]
 
       -- Set the buttons accordingly to pressed selection
       setups[self.guiElementNames.fieldSetupOptionS].style = settings.guiSelectButtonStyle
@@ -522,9 +522,9 @@ function Gui:handleGuiMenuButtons(event)
     if event.element.name == self.guiElementNames.buttonApplySettings then
       if self:verifyAndSetFromGui(playerIndex) then
         -- Close the gui in the data
-        global.forcefields.emitterConfigGuis["I" .. playerIndex] = nil
-        if LSlib.utils.table.isEmpty(global.forcefields.emitterConfigGuis) then
-          global.forcefields.emitterConfigGuis = nil
+        storage.forcefields.emitterConfigGuis["I" .. playerIndex] = nil
+        if LSlib.utils.table.isEmpty(storage.forcefields.emitterConfigGuis) then
+          storage.forcefields.emitterConfigGuis = nil
         end
         -- Close the gui visualy
         if guiCenter[self.guiElementNames.configFrame] then
@@ -559,10 +559,10 @@ function Gui:handleGuiConfigWallChange(event)
     local player = game.players[playerIndex]
     local force = player.force
     local fieldType
-    if global.forcefields.emitterConfigGuis["I" .. playerIndex][3] ~= nil then
-      fieldType = global.forcefields.emitterConfigGuis["I" .. playerIndex][3]
+    if storage.forcefields.emitterConfigGuis["I" .. playerIndex][3] ~= nil then
+      fieldType = storage.forcefields.emitterConfigGuis["I" .. playerIndex][3]
     else
-      fieldType = global.forcefields.emitterConfigGuis["I" .. playerIndex][1]["type"]
+      fieldType = storage.forcefields.emitterConfigGuis["I" .. playerIndex][1]["type"]
     end
 
     if not force.technologies[settings.fieldSuffix..fieldType].researched then
@@ -597,10 +597,10 @@ function Gui:handleGuiConfigWallRowChange(event)
     local player = game.players[playerIndex]
     local force = player.force
     local fieldType
-    if global.forcefields.emitterConfigGuis["I" .. playerIndex][3] ~= nil then
-      fieldType = global.forcefields.emitterConfigGuis["I" .. playerIndex][3]
+    if storage.forcefields.emitterConfigGuis["I" .. playerIndex][3] ~= nil then
+      fieldType = storage.forcefields.emitterConfigGuis["I" .. playerIndex][3]
     else
-      fieldType = global.forcefields.emitterConfigGuis["I" .. playerIndex][1]["type"]
+      fieldType = storage.forcefields.emitterConfigGuis["I" .. playerIndex][1]["type"]
     end
 
     if not force.technologies[settings.fieldSuffix..fieldType].researched then
@@ -641,12 +641,12 @@ function Gui:handleGuiConfigWallClose(event)
   local configTableData = LSlib.gui.getElement(playerIndex, self.guiElementPaths.configTableSlider)[self.guiElementNames.configTableData]
 
   local configTable -- Undo all the changes that has been done
-  if not global.forcefields.emitterConfigGuis["I" .. playerIndex][4] then
+  if not storage.forcefields.emitterConfigGuis["I" .. playerIndex][4] then
     -- No previous settings, still using the settings from the emitterTable
-    configTable = util.table.deepcopy(global.forcefields.emitterConfigGuis["I" .. playerIndex][1]["config"])
+    configTable = util.table.deepcopy(storage.forcefields.emitterConfigGuis["I" .. playerIndex][1]["config"])
   else
     -- There where settings when opened, lets use these
-    configTable = global.forcefields.emitterConfigGuis["I" .. playerIndex][4]
+    configTable = storage.forcefields.emitterConfigGuis["I" .. playerIndex][4]
   end
 
   -- First we need to save the data
@@ -680,7 +680,7 @@ function Gui:handleGuiConfigWallClose(event)
         configTable[fieldIndex-fieldOffset] = settings.fieldEmptySuffix
       end
     end
-    global.forcefields.emitterConfigGuis["I" .. playerIndex][4] = configTable
+    storage.forcefields.emitterConfigGuis["I" .. playerIndex][4] = configTable
   end
 
   -- Now we need to change the guis back
@@ -760,16 +760,16 @@ function Gui:verifyAndSetFromGui(playerIndex)
   --local emitterConfigTable = frame[self.guiElementNames.configTable]
   --local upgrades = emitterConfigTable[self.guiElementNames.upgradesTable]
 
-  if global.forcefields.emitterConfigGuis ~= nil
-    and global.forcefields.emitterConfigGuis["I" .. playerIndex] ~= nil
-    and global.forcefields.emitterConfigGuis["I" .. playerIndex][1]["entity"].valid then
+  if storage.forcefields.emitterConfigGuis ~= nil
+    and storage.forcefields.emitterConfigGuis["I" .. playerIndex] ~= nil
+    and storage.forcefields.emitterConfigGuis["I" .. playerIndex][1]["entity"].valid then
 
     -- Check if settings have changed
-    local emitterTable = global.forcefields.emitterConfigGuis["I" .. playerIndex][1]
+    local emitterTable = storage.forcefields.emitterConfigGuis["I" .. playerIndex][1]
 
     -- Direction of the forcefield
-    if global.forcefields.emitterConfigGuis["I" .. playerIndex][2] ~= nil then
-      newDirection = global.forcefields.emitterConfigGuis["I" .. playerIndex][2]
+    if storage.forcefields.emitterConfigGuis["I" .. playerIndex][2] ~= nil then
+      newDirection = storage.forcefields.emitterConfigGuis["I" .. playerIndex][2]
     elseif emitterTable["direction"] == nil then
       player.print("No wall direction selected.")
       settingsAreGood = false
@@ -778,8 +778,8 @@ function Gui:verifyAndSetFromGui(playerIndex)
     end
 
     -- Type of forcefield
-    if global.forcefields.emitterConfigGuis["I" .. playerIndex][3] ~= nil then
-      newFieldType = global.forcefields.emitterConfigGuis["I" .. playerIndex][3]
+    if storage.forcefields.emitterConfigGuis["I" .. playerIndex][3] ~= nil then
+      newFieldType = storage.forcefields.emitterConfigGuis["I" .. playerIndex][3]
     elseif emitterTable["type"] == nil then
       player.print("No wall type selected.")
       settingsAreGood = false
@@ -788,8 +788,8 @@ function Gui:verifyAndSetFromGui(playerIndex)
     end
 
     -- Setting of forcefield
-    if global.forcefields.emitterConfigGuis["I" .. playerIndex][5] ~= nil then
-      newFieldSetup = global.forcefields.emitterConfigGuis["I" .. playerIndex][5]
+    if storage.forcefields.emitterConfigGuis["I" .. playerIndex][5] ~= nil then
+      newFieldSetup = storage.forcefields.emitterConfigGuis["I" .. playerIndex][5]
     elseif emitterTable["setup"] == nil then
       player.print("No wall setup selected.")
       settingsAreGood = false
@@ -854,8 +854,8 @@ function Gui:verifyAndSetFromGui(playerIndex)
         newFieldConfig[i-widthOffset] = settings.defaultFieldSuffix
       end
     else
-      if global.forcefields.emitterConfigGuis["I" .. playerIndex][4] ~= nil then
-        newFieldConfig = global.forcefields.emitterConfigGuis["I" .. playerIndex][4]
+      if storage.forcefields.emitterConfigGuis["I" .. playerIndex][4] ~= nil then
+        newFieldConfig = storage.forcefields.emitterConfigGuis["I" .. playerIndex][4]
       else
         newFieldConfig = util.table.deepcopy(emitterTable["config"])
       end
@@ -909,9 +909,9 @@ function Gui:removeAllUpgrades(playerIndex)
   local frame = game.players[playerIndex].gui.center[self.guiElementNames.guiFrame]
 
   if frame then -- This shouldn't ever be required but won't hurt to check
-    if global.forcefields.emitterConfigGuis ~= nil
-      and global.forcefields.emitterConfigGuis["I" .. playerIndex] ~= nil
-      and global.forcefields.emitterConfigGuis["I" .. playerIndex][1]["entity"].valid then
+    if storage.forcefields.emitterConfigGuis ~= nil
+      and storage.forcefields.emitterConfigGuis["I" .. playerIndex] ~= nil
+      and storage.forcefields.emitterConfigGuis["I" .. playerIndex][1]["entity"].valid then
       local upgrades = frame[self.guiElementNames.configTable][self.guiElementNames.upgradesTable]
       local count
       --local buttonName
@@ -927,10 +927,10 @@ function Gui:removeAllUpgrades(playerIndex)
         end
       end
     else -- invalid emitter entity (for example when someone destroys the emitter while another person is viewing the gui)
-      if global.forcefields.emitterConfigGuis ~= nil and global.forcefields.emitterConfigGuis["I" .. playerIndex] ~= nil then
-        global.forcefields.emitterConfigGuis["I" .. playerIndex] = nil
-        if LSlib.utils.table.isEmpty(global.forcefields.emitterConfigGuis) then
-          global.forcefields.emitterConfigGuis = nil
+      if storage.forcefields.emitterConfigGuis ~= nil and storage.forcefields.emitterConfigGuis["I" .. playerIndex] ~= nil then
+        storage.forcefields.emitterConfigGuis["I" .. playerIndex] = nil
+        if LSlib.utils.table.isEmpty(storage.forcefields.emitterConfigGuis) then
+          storage.forcefields.emitterConfigGuis = nil
         end
       end
       -- close the gui

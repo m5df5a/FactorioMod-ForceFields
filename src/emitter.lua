@@ -11,19 +11,19 @@ Emitter = {}
 function Emitter:onEmitterBuilt(createdEntity)
   local newEmitter = {}
   local surface = createdEntity.surface
-  if not global.forcefields then
-    global.forcefields = {}
+  if not storage.forcefields then
+    storage.forcefields = {}
   end
-  if global.forcefields.emitters == nil then
-    global.forcefields.emitters = {}
-    global.forcefields.emitterNEI = 1 -- NextEmitterIndex
+  if storage.forcefields.emitters == nil then
+    storage.forcefields.emitters = {}
+    storage.forcefields.emitterNEI = 1 -- NextEmitterIndex
   end
   local maxWidth = settings.emitterMaxWidth
   local widthOffset = (maxWidth + 1)/2
   local defaultType = settings.defaultFieldSuffix
 
   -- emitter data
-  newEmitter["emitter-NEI"] = "I" .. global.forcefields.emitterNEI
+  newEmitter["emitter-NEI"] = "I" .. storage.forcefields.emitterNEI
   newEmitter["entity"] = createdEntity
   -- emitter settings
   newEmitter["type"] = settings.defaultFieldType
@@ -46,8 +46,8 @@ function Emitter:onEmitterBuilt(createdEntity)
   newEmitter["damaged-fields"] = nil
 
   -- Simulates reviving killed emitters => it copies old settings
-  if global.forcefields.killedEmitters ~= nil then
-    for k,killedEmitter in pairs(global.forcefields.killedEmitters) do
+  if storage.forcefields.killedEmitters ~= nil then
+    for k,killedEmitter in pairs(storage.forcefields.killedEmitters) do
       if killedEmitter["surface"] == surface and killedEmitter["position"].x == createdEntity.position.x and killedEmitter["position"].y == createdEntity.position.y then
         newEmitter["disabled"] = killedEmitter["disabled"]
         newEmitter["type"] = killedEmitter["type"]
@@ -62,8 +62,8 @@ function Emitter:onEmitterBuilt(createdEntity)
     end
   end
 
-  global.forcefields.emitters["I" .. global.forcefields.emitterNEI] = util.table.deepcopy(newEmitter)
-  global.forcefields.emitterNEI = global.forcefields.emitterNEI + 1
+  storage.forcefields.emitters["I" .. storage.forcefields.emitterNEI] = util.table.deepcopy(newEmitter)
+  storage.forcefields.emitterNEI = storage.forcefields.emitterNEI + 1
 
   self:setActive(newEmitter, true, true)
 end
@@ -197,8 +197,8 @@ end
 
 
 function Emitter:findEmitter(emitter)
-  if global.forcefields.emitters ~= nil then
-    for k,v in pairs(global.forcefields.emitters) do
+  if storage.forcefields.emitters ~= nil then
+    for k,v in pairs(storage.forcefields.emitters) do
       if v["entity"] == emitter then
         return v
       end
@@ -222,10 +222,10 @@ function Emitter:setActive(emitterTable, enableCheckBuildingFields, skipResetTim
 
   if not emitterTable["active"] then
     emitterTable["active"] = true
-    if global.forcefields.activeEmitters == nil then
-      global.forcefields.activeEmitters = {}
+    if storage.forcefields.activeEmitters == nil then
+      storage.forcefields.activeEmitters = {}
     end
-    table.insert(global.forcefields.activeEmitters, emitterTable)
+    table.insert(storage.forcefields.activeEmitters, emitterTable)
     self:activateTicker()
   end
 end
@@ -233,8 +233,8 @@ end
 
 
 function Emitter:activateTicker()
-  if not global.forcefields.ticking then
-    global.forcefields.ticking = settings.tickRate
+  if not storage.forcefields.ticking then
+    storage.forcefields.ticking = settings.tickRate
     script.on_event(defines.events.on_tick, function(_) Emitter:onTick() end)
   end
 end
@@ -242,11 +242,11 @@ end
 
 
 function Emitter:onTick()
-  if global.forcefields.ticking == 0 then
-    global.forcefields.ticking = settings.tickRate - 1
+  if storage.forcefields.ticking == 0 then
+    storage.forcefields.ticking = settings.tickRate - 1
     self:updateTick()
   else
-    global.forcefields.ticking = global.forcefields.ticking - 1
+    storage.forcefields.ticking = storage.forcefields.ticking - 1
   end
 end
 
@@ -255,13 +255,13 @@ end
 function Emitter:updateTick()
   local shouldKeepTicking
   -- Active emitters tick
-  if global.forcefields.activeEmitters ~= nil then
+  if storage.forcefields.activeEmitters ~= nil then
     local shouldRemainActive
     local emitterTable
     shouldKeepTicking = true
 
     -- For each active emitter check if they have fields to repair or fields to build
-    for k,emitterTable in pairs(global.forcefields.activeEmitters) do
+    for k,emitterTable in pairs(storage.forcefields.activeEmitters) do
       if emitterTable["entity"].valid then
         -- By default let us not keep it active, if its needed we re-activate it
         shouldRemainActive = false
@@ -309,9 +309,9 @@ function Emitter:updateTick()
   end
 
   -- Degrading force fields tick - happens when a emitter dies or is mined.
-  if global.forcefields.degradingFields ~= nil then
+  if storage.forcefields.degradingFields ~= nil then
     shouldKeepTicking = true
-    for k,v in pairs(global.forcefields.degradingFields) do
+    for k,v in pairs(storage.forcefields.degradingFields) do
       -- TODO change v[entity] in config change + add position and surface
       --if not v["fieldEntity"] and v["entity"] then
       --  v["fieldEntity"] = v["entity"]
@@ -332,8 +332,8 @@ function Emitter:updateTick()
     end
   end
 
-  if global.forcefields.searchDamagedPos ~= nil then
-    local searchDamagedPos = global.forcefields.searchDamagedPos
+  if storage.forcefields.searchDamagedPos ~= nil then
+    local searchDamagedPos = storage.forcefields.searchDamagedPos
     shouldKeepTicking = true
     -- for each damages position
     for index,xs in pairs (searchDamagedPos) do
@@ -358,11 +358,11 @@ function Emitter:updateTick()
       searchDamagedPos = nil
     end
 
-    global.forcefields.searchDamagedPos = searchDamagedPos
+    storage.forcefields.searchDamagedPos = searchDamagedPos
   end
 
   if not shouldKeepTicking then
-    global.forcefields.ticking = nil
+    storage.forcefields.ticking = nil
     script.on_event(defines.events.on_tick, nil)
   end
 end
@@ -370,13 +370,13 @@ end
 
 
 function Emitter:removeEmitterID(emitterID)
-  if global.forcefields.emitters ~= nil then
-    if global.forcefields.emitters[emitterID] ~= nil then
-      Forcefield:degradeLinkedFields(global.forcefields.emitters[emitterID])
-      global.forcefields.emitters[emitterID] = nil
-      if LSlib.utils.table.isEmpty(global.forcefields.emitters) then
-        global.forcefields.emitters = nil
-        global.forcefields.emitterNEI = nil
+  if storage.forcefields.emitters ~= nil then
+    if storage.forcefields.emitters[emitterID] ~= nil then
+      Forcefield:degradeLinkedFields(storage.forcefields.emitters[emitterID])
+      storage.forcefields.emitters[emitterID] = nil
+      if LSlib.utils.table.isEmpty(storage.forcefields.emitters) then
+        storage.forcefields.emitters = nil
+        storage.forcefields.emitterNEI = nil
       else
         return true
       end
@@ -387,11 +387,11 @@ end
 
 
 function Emitter:removeActiveEmitterID(activeEmitterID)
-  -- Returns true if the global.forcefields.activeEmitters table isn't empty
-  if global.forcefields.activeEmitters ~= nil and global.forcefields.activeEmitters[activeEmitterID] ~= nil then
-    table.remove(global.forcefields.activeEmitters, activeEmitterID)
-    if #global.forcefields.activeEmitters == 0 then
-      global.forcefields.activeEmitters = nil
+  -- Returns true if the storage.forcefields.activeEmitters table isn't empty
+  if storage.forcefields.activeEmitters ~= nil and storage.forcefields.activeEmitters[activeEmitterID] ~= nil then
+    table.remove(storage.forcefields.activeEmitters, activeEmitterID)
+    if #storage.forcefields.activeEmitters == 0 then
+      storage.forcefields.activeEmitters = nil
     else
       return true
     end
@@ -401,9 +401,9 @@ end
 
 
 function Emitter:removeKilledEmitter(killedEmittersIndex)
-  table.remove(global.forcefields.killedEmitters, killedEmittersIndex)
-  if #global.forcefields.killedEmitters == 0 then
-    global.forcefields.killedEmitters = nil
+  table.remove(storage.forcefields.killedEmitters, killedEmittersIndex)
+  if #storage.forcefields.killedEmitters == 0 then
+    storage.forcefields.killedEmitters = nil
   end
 end
 
@@ -411,8 +411,8 @@ end
 
 function Emitter:storeKilledEmitter(emitterTable)
   local newKilledEmitter = {}
-  if global.forcefields.killedEmitters == nil then
-    global.forcefields.killedEmitters = {}
+  if storage.forcefields.killedEmitters == nil then
+    storage.forcefields.killedEmitters = {}
   end
   newKilledEmitter["disabled"] = emitterTable["disabled"]
   newKilledEmitter["surface"] = emitterTable["entity"].surface
@@ -423,5 +423,5 @@ function Emitter:storeKilledEmitter(emitterTable)
   newKilledEmitter["type"] = emitterTable["type"]
   newKilledEmitter["config"] = emitterTable["config"]
   newKilledEmitter["direction"] = emitterTable["direction"]
-  table.insert(global.forcefields.killedEmitters, newKilledEmitter)
+  table.insert(storage.forcefields.killedEmitters, newKilledEmitter)
 end

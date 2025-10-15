@@ -12,16 +12,16 @@ function Forcefield:onForcefieldDamaged(damagedEntity)
   pos.x = math.floor(pos.x)
   pos.y = math.floor(pos.y)
 
-  if global.forcefields.searchDamagedPos == nil then
-    global.forcefields.searchDamagedPos = {}
+  if storage.forcefields.searchDamagedPos == nil then
+    storage.forcefields.searchDamagedPos = {}
   end
-  if global.forcefields.searchDamagedPos[index] == nil then
-    global.forcefields.searchDamagedPos[index] = {}
+  if storage.forcefields.searchDamagedPos[index] == nil then
+    storage.forcefields.searchDamagedPos[index] = {}
   end
-  if global.forcefields.searchDamagedPos[index][pos.x] == nil then
-    global.forcefields.searchDamagedPos[index][pos.x] = {}
+  if storage.forcefields.searchDamagedPos[index][pos.x] == nil then
+    storage.forcefields.searchDamagedPos[index][pos.x] = {}
   end
-  global.forcefields.searchDamagedPos[index][pos.x][pos.y] = 1
+  storage.forcefields.searchDamagedPos[index][pos.x][pos.y] = 1
   Emitter:activateTicker()
 end
 
@@ -32,11 +32,11 @@ function Forcefield:onForcefieldDied(field)
   local surface = field.surface
   local index = surface.index
 
-  if global.forcefields.fields ~= nil and global.forcefields.fields[index] ~= nil and global.forcefields.fields[index][pos.x] ~= nil and global.forcefields.fields[index][pos.x][pos.y] ~= nil then
-    local emitterID = global.forcefields.fields[index][pos.x][pos.y]
+  if storage.forcefields.fields ~= nil and storage.forcefields.fields[index] ~= nil and storage.forcefields.fields[index][pos.x] ~= nil and storage.forcefields.fields[index][pos.x][pos.y] ~= nil then
+    local emitterID = storage.forcefields.fields[index][pos.x][pos.y]
     self:removeForceFieldID(index, pos.x, pos.y)
-    if global.forcefields.emitters ~= nil and global.forcefields.emitters[emitterID] ~= nil then
-      Emitter:setActive(global.forcefields.emitters[emitterID], true)
+    if storage.forcefields.emitters ~= nil and storage.forcefields.emitters[emitterID] ~= nil then
+      Emitter:setActive(storage.forcefields.emitters[emitterID], true)
     end
     if settings.forcefieldTypes[field.name]["deathEntity"] ~= nil then
       surface.create_entity({name = settings.forcefieldTypes[field.name]["deathEntity"], position = pos, force = field.force})
@@ -57,11 +57,11 @@ function Forcefield:onForcefieldMined(field, playerIndex)
     end
   end
 
-  if global.forcefields.fields ~= nil then
+  if storage.forcefields.fields ~= nil then
     local pos = field.position
     local index = field.surface.index
-    if global.forcefields.fields[index] ~= nil and global.forcefields.fields[index][pos.x] ~= nil and global.forcefields.fields[index][pos.x][pos.y] ~= nil then
-      local emitterTable = global.forcefields.emitters[global.forcefields.fields[index][pos.x][pos.y]]
+    if storage.forcefields.fields[index] ~= nil and storage.forcefields.fields[index][pos.x] ~= nil and storage.forcefields.fields[index][pos.x][pos.y] ~= nil then
+      local emitterTable = storage.forcefields.emitters[storage.forcefields.fields[index][pos.x][pos.y]]
       if emitterTable then
         Emitter:setActive(emitterTable, true)
       end
@@ -96,7 +96,7 @@ function Forcefield:scanAndBuildFields(emitterTable)
       end
 
       -- Check if table for that surface exist, if not, make it
-      local fields = global.forcefields.fields
+      local fields = storage.forcefields.fields
       if fields == nil then
         fields = {}
       end
@@ -139,10 +139,10 @@ function Forcefield:scanAndBuildFields(emitterTable)
           else -- If we can't place the field
             local blockingField = self:findForcefieldsRadius(surface, pos, 0.4, true)
             if blockingField ~= nil then
-              if global.forcefields.degradingFields ~= nil then
+              if storage.forcefields.degradingFields ~= nil then
                 -- Prevents the emitter from going into extended sleep from "can't build" due to degrading fields (happens most when switching field types)
                 local fpos = blockingField[1].position
-                for _,field in pairs(global.forcefields.degradingFields) do
+                for _,field in pairs(storage.forcefields.degradingFields) do
                   if field["fieldEntity"].valid and field["fieldEntity"].position.x == pos.x and field["fieldEntity"].position.y == pos.y then
                     builtField = true
                     break
@@ -173,7 +173,7 @@ function Forcefield:scanAndBuildFields(emitterTable)
           fields = nil
         end
       end
-      global.forcefields.fields = fields
+      storage.forcefields.fields = fields
 
       -- check if the whole field is blocked
       if blockingFields == incTimes then
@@ -285,8 +285,8 @@ end
 
 
 function Forcefield:handleDamagedFields(forceFields)
-  local emitters = global.forcefields.emitters
-  local fields = global.forcefields.fields
+  local emitters = storage.forcefields.emitters
+  local fields = storage.forcefields.fields
   local pos
   local surface
   local index
@@ -330,7 +330,7 @@ function Forcefield:handleDamagedFields(forceFields)
     end
   end
 
-  global.forcefields.emitters = emitters
+  storage.forcefields.emitters = emitters
 end
 
 
@@ -445,7 +445,7 @@ end
 
 
 function Forcefield:degradeLinkedFields(emitterTable)
-  if global.forcefields.fields ~= nil and emitterTable["entity"].valid then
+  if storage.forcefields.fields ~= nil and emitterTable["entity"].valid then
     local fields
     local surface = emitterTable["entity"].surface
     local pos1, xInc, yInc, incTimes = self:getFieldsArea(emitterTable)
@@ -476,26 +476,26 @@ function Forcefield:degradeLinkedFields(emitterTable)
 
     --we need to degrade all found fields
     if fields then
-      if global.forcefields.degradingFields == nil then
-        global.forcefields.degradingFields = {}
+      if storage.forcefields.degradingFields == nil then
+        storage.forcefields.degradingFields = {}
       end
       local index = surface.index
       for k,field in pairs(fields) do
         pos = field.position
         -- make sure the field is controlled by this emitter, if not, we don't need to degrade it
-        if global.forcefields.fields[index] ~= nil and global.forcefields.fields[index][pos.x] ~= nil and global.forcefields.fields[index][pos.x][pos.y] == emitterTable["emitter-NEI"] then
+        if storage.forcefields.fields[index] ~= nil and storage.forcefields.fields[index][pos.x] ~= nil and storage.forcefields.fields[index][pos.x][pos.y] == emitterTable["emitter-NEI"] then
           -- adds the forcefield entity to the degrading list
-          table.insert(global.forcefields.degradingFields, {["fieldEntity"] = field, ["emitter-NEI"] = emitterTable["emitter-NEI"], ["position"] = field.position, ["surface"] = field.surface})
+          table.insert(storage.forcefields.degradingFields, {["fieldEntity"] = field, ["emitter-NEI"] = emitterTable["emitter-NEI"], ["position"] = field.position, ["surface"] = field.surface})
           self:removeForceField(field)
 
-          if global.forcefields.fields == nil then
+          if storage.forcefields.fields == nil then
             break
           end
         end
       end
 
-      if #global.forcefields.degradingFields == 0 then
-        global.forcefields.degradingFields = nil
+      if #storage.forcefields.degradingFields == 0 then
+        storage.forcefields.degradingFields = nil
       else
         Emitter:activateTicker()
       end
@@ -506,21 +506,21 @@ end
 
 
 function Forcefield:removeDegradingFieldID(fieldID)
-  -- Returns true if the global.forcefields.degradingFields table isn't empty
-  if global.forcefields.degradingFields ~= nil then
+  -- Returns true if the storage.forcefields.degradingFields table isn't empty
+  if storage.forcefields.degradingFields ~= nil then
     local emitterTable
-    if global.forcefields.emitters then
-      local emitterIndex = global.forcefields.degradingFields[fieldID]["emitter-NEI"]
-      local emitterTable = global.forcefields.emitters[emitterIndex]
+    if storage.forcefields.emitters then
+      local emitterIndex = storage.forcefields.degradingFields[fieldID]["emitter-NEI"]
+      local emitterTable = storage.forcefields.emitters[emitterIndex]
     end
 
     if emitterTable ~= nil then
-      table.remove(global.forcefields.degradingFields, fieldID)
+      table.remove(storage.forcefields.degradingFields, fieldID)
       Emitter:setActive(emitterTable, true)
     else
-      local pos = global.forcefields.degradingFields[fieldID].position
-      local surface = global.forcefields.degradingFields[fieldID].surface
-      table.remove(global.forcefields.degradingFields, fieldID)
+      local pos = storage.forcefields.degradingFields[fieldID].position
+      local surface = storage.forcefields.degradingFields[fieldID].surface
+      table.remove(storage.forcefields.degradingFields, fieldID)
 
       -- check if this field could be part of any emitter
       if surface and surface.valid then
@@ -534,8 +534,8 @@ function Forcefield:removeDegradingFieldID(fieldID)
       end
     end
 
-    if #global.forcefields.degradingFields == 0 then
-      global.forcefields.degradingFields = nil
+    if #storage.forcefields.degradingFields == 0 then
+      storage.forcefields.degradingFields = nil
     else
       return true
     end
@@ -546,10 +546,10 @@ end
 
 function Forcefield:removeForceField(field)
   -- removes a forcefield from the active fields list (glovel.forcefields.fields)
-  if global.forcefields.fields ~= nil then
+  if storage.forcefields.fields ~= nil then
     local pos = field.position
     local index = field.surface.index
-    if global.forcefields.fields[index] ~= nil and global.forcefields.fields[index][pos.x] ~= nil and global.forcefields.fields[index][pos.x][pos.y] ~= nil then
+    if storage.forcefields.fields[index] ~= nil and storage.forcefields.fields[index][pos.x] ~= nil and storage.forcefields.fields[index][pos.x][pos.y] ~= nil then
       self:removeForceFieldID(index, pos.x, pos.y)
     end
   end
@@ -559,14 +559,14 @@ end
 
 function Forcefield:removeForceFieldID(index, x, y)
   -- Does no checking, make sure its a valid table index
-  global.forcefields.fields[index][x][y] = nil
-  if LSlib.utils.table.isEmpty(global.forcefields.fields[index][x]) then
-    global.forcefields.fields[index][x] = nil
-    if LSlib.utils.table.isEmpty(global.forcefields.fields[index]) then
-      global.forcefields.fields[index] = nil
+  storage.forcefields.fields[index][x][y] = nil
+  if LSlib.utils.table.isEmpty(storage.forcefields.fields[index][x]) then
+    storage.forcefields.fields[index][x] = nil
+    if LSlib.utils.table.isEmpty(storage.forcefields.fields[index]) then
+      storage.forcefields.fields[index] = nil
     end
-    if LSlib.utils.table.isEmpty(global.forcefields.fields) then
-      global.forcefields.fields = nil
+    if LSlib.utils.table.isEmpty(storage.forcefields.fields) then
+      storage.forcefields.fields = nil
     end
   end
 end

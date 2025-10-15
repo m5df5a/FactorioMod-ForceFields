@@ -20,7 +20,7 @@ function forcefieldWallEntity(color)
   table.insert(forcefieldWall.flags, "not-repairable")
   table.insert(forcefieldWall.flags, "not-blueprintable")
   table.insert(forcefieldWall.flags, "not-deconstructable")
-  table.insert(forcefieldWall.flags, "hidden")
+  forcefieldWall.hidden = true
   table.insert(forcefieldWall.flags, "not-upgradable")
   table.insert(forcefieldWall.flags, "no-copy-paste")
   
@@ -98,7 +98,7 @@ function forcefieldGateEntity(color)
   table.insert(forcefieldGate.flags, "not-repairable")
   table.insert(forcefieldGate.flags, "not-blueprintable")
   table.insert(forcefieldGate.flags, "not-deconstructable")
-  table.insert(forcefieldGate.flags, "hidden")
+  forcefieldGate.hidden = true
   table.insert(forcefieldGate.flags, "not-upgradable")
   table.insert(forcefieldGate.flags, "no-copy-paste")
 

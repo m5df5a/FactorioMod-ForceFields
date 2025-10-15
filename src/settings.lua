@@ -134,7 +134,7 @@ settings.forcefieldCircleData = createFieldCircleData()
 function settings:verifyRemoteSettings()
   local modName = string.sub(settings.modName, 3, -3)
 
-  if game.active_mods["warptorio2"] then
+  if script.active_mods["warptorio2"] then
     LSlib.utils.log.log("Verify remote settings for warptorio2")
 
     local interfaceName = "warptorio2"

@@ -12,10 +12,10 @@ require 'remote'
 
 -- on load game for first time or when settings change
 function init()
-  if not global.forcefields then
-    global.forcefields = {}
+  if not storage.forcefields then
+    storage.forcefields = {}
   end
-  global.forcefields.version = ConfigChanges.currentVersion
+  storage.forcefields.version = ConfigChanges.currentVersion
 end
 
 script.on_init(function(_)
@@ -35,7 +35,7 @@ end)
 -- on loading the map
 script.on_event(defines.events.on_tick, nil)
 script.on_load(function(event)
-  if global.forcefields and global.forcefields.ticking then
+  if storage.forcefields and storage.forcefields.ticking then
     script.on_event(defines.events.on_tick, function(_) Emitter:onTick() end)
   end
 end)

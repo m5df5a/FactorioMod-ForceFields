@@ -13,8 +13,15 @@ LSlib.styles.addFlowStyle{
   name = guiSettings["guiTableRowHeaderFlowStyle"],
   parent = "flow",
 
-  margin = 0,
-  padding = 0,
+  top_margin = 0,
+  bottom_margin = 0,
+  left_margin = 0,
+  right_margin = 0,
+
+  top_padding = 0,
+  bottom_padding = 0,
+  left_padding = 0,
+  right_padding = 0,
   horizontaly_strechable = true,
 }
 
