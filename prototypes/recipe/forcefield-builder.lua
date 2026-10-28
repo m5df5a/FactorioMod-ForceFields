@@ -32,7 +32,7 @@ function forcefieldWallRecipe(color)
     results              = {},
     always_show_products = false,
 
-    category            = emitter["crafting-category"],
+    categories            = {emitter["crafting-category"]},
     always_show_made_in = true,
   }}
 
@@ -74,7 +74,7 @@ function forcefieldGateRecipe(color)
     results             = {},
     always_show_made_in = true,
 
-    category            = emitter["crafting-category"],
+    categories            = {emitter["crafting-category"]},
     always_show_made_in = true,
   }}
 
